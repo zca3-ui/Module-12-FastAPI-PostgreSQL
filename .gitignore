@@ -24,3 +24,5 @@ Thumbs.db
 # IDE settings
 .vscode/
 .idea/
+# Local backup files
+main_backup.py
