@@ -17,6 +17,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/fastapi_db
+      TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/fastapi_test_db
 
     services:
       postgres:
@@ -56,6 +57,12 @@ jobs:
             -v ON_ERROR_STOP=1 -f sql/01_schema.sql
           psql -h localhost -U postgres -d fastapi_db \
             -v ON_ERROR_STOP=1 -f sql/04_add_password_hash.sql
+
+      - name: Create isolated API test database
+        env:
+          PGPASSWORD: postgres
+        run: |
+          createdb -h localhost -U postgres fastapi_test_db
 
       - name: Create SQLAlchemy tables
         run: |
@@ -137,3 +144,4 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-calculation-api:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-calculation-api:${{ github.sha }}
+
